@@ -1,0 +1,11 @@
+sqlalchemy
+pgvector
+transformers
+torch
+pydantic
+fastapi
+dotenv
+psycopg2
+langchain
+langchain-community
+sentence-transformers
