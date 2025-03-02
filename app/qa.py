@@ -12,8 +12,8 @@ class QAResponse(BaseModel):
     relevant_documents: list 
 
 #Load a small,CPU friendly model 
-tokenizer = AutoTokenizer.from_pretrained("google/flan-t5-small")
-llm_model = AutoModelForSeq2SeqLM.from_pretrained("google/flan-t5-small")
+tokenizer = AutoTokenizer.from_pretrained("google/flan-t5-large")
+llm_model = AutoModelForSeq2SeqLM.from_pretrained("google/flan-t5-large")
 
 def generate_answer(question, documents):
     combined_content = "\n".join([
