@@ -1,21 +1,36 @@
+#necessary imports 
 from pydantic import BaseModel
 from fastapi import HTTPException
 from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
+from dotenv import load_dotenv
 import torch
+import os 
 
+#load the necessary environmental variables
+load_dotenv()
+
+TEXT_GENERATION_MODEL=os.getenv('TEXT_GENERATION_MODEL')
+
+#QARequest Model Structure
 class QARequest(BaseModel):
     question: str
     top_k: int 
 
+#QAResponse Model Structure
 class QAResponse(BaseModel):
     answer: str
     relevant_documents: list 
 
-#Load a small,CPU friendly model 
-tokenizer = AutoTokenizer.from_pretrained("google/flan-t5-large")
-llm_model = AutoModelForSeq2SeqLM.from_pretrained("google/flan-t5-large")
+#Loading the GPU friendly model
+tokenizer = AutoTokenizer.from_pretrained(TEXT_GENERATION_MODEL)
+llm_model = AutoModelForSeq2SeqLM.from_pretrained(TEXT_GENERATION_MODEL)
 
 def generate_answer(question, documents):
+    """
+    Function that generates the answer to the user question based on the 
+    prompt and document retrieved from the vector store
+    args: question, documents
+    """
     combined_content = "\n".join([
         doc.page_content if hasattr(doc, "page_content") else doc[1] 
         for doc in documents

@@ -1,9 +1,11 @@
+#Necessary imports
 import pytest
 from fastapi.testclient import TestClient
 from main import app
 from models import User
 from database import SessionLocal
 
+# Initialize the Test Client
 client = TestClient(app)
 
 

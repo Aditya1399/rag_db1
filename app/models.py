@@ -1,3 +1,4 @@
+#necessary imports 
 from sqlalchemy import create_engine, Column, Integer, String, DateTime,Boolean
 from sqlalchemy.orm import sessionmaker, declarative_base
 from pgvector.sqlalchemy import Vector
@@ -9,6 +10,7 @@ Base = declarative_base()
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
+#Document model
 class Document(Base):
     __tablename__ = "documents"
     
@@ -17,12 +19,14 @@ class Document(Base):
     content: Mapped[str] = mapped_column(String)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(timezone.utc))
 
+#Embedding model
 class Embedding(Base):
     __tablename__ = "embeddings"
     id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
     document_id: Mapped[int] = mapped_column(Integer)
     embedding: Mapped[list[float]] = mapped_column(Vector(384))
 
+#User model
 class User(Base):
     __tablename__ = "users"
     id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
@@ -36,10 +40,9 @@ class User(Base):
     def hash_password(password: str) -> str:
         return pwd_context.hash(password)
 
+#Function to initialise the db given 
 def init_db(db_url):
     engine = create_engine(db_url)
     Base.metadata.create_all(bind=engine)
     return sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
-hashed_password = pwd_context.hash("1234")
-user = User

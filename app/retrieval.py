@@ -1,7 +1,9 @@
+#necessary imports 
 from langchain_community.vectorstores import PGVector
 from langchain.embeddings import HuggingFaceEmbeddings
 import os
 
+#Initialize the secret variable
 DB_URL = os.getenv("DB_URL")
 
 # Reuse the vector store with Hugging Face embeddings
@@ -12,5 +14,9 @@ vector_store = PGVector(
 )
 
 def retrieve_documents(query, top_k=5):
+    """
+    Function to retrieve the top k documents based on the query
+    args: query, top_k
+    """
     results = vector_store.similarity_search(query, k=top_k)
     return results

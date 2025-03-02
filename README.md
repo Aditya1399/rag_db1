@@ -1,16 +1,41 @@
-To run the code, first enable the virtual environment using 
-1. python3 -m venv <env_name>
-2. source <env_name>/bin/activate
+## Setup venv
 
-Install the necessary libraries, present in the requirements file.
+- Open terminal in the current folder
+- Run `python -m venv .venv`
+- To install packages, run `pip install -r requirements.txt`
+- Create `.env` file in `rag_backend` folder
 
-Run the following commands,
-1. sudo apt-install postgresql-16-pgvector
+## To set up the database
 
-and then inside the psql shell run the command 
-'CREATE EXTENSION IF NOT EXISTS VECTOR'
+- Use sudo apt-install postgresql-16-pgvector
+- Go to the psql shell and database.
+- Run the SQL statement `CREATE EXTENSION IF NOT EXISTS VECTOR`.
 
-To run the migrations, first install alembic using sudo apt install alembic
-alembic revision --autogenerate -m "Command Name"
+## Add a dummy user 
+
+- Go to the rag_backend folder
+- Run the following shell script to create a new user to get the password
+- """
+    from app.models import User
+    from app.database import SessionLocal
+
+    db = SessionLocal()
+    hashed_password = User.hash_password("your_password")
+    new_user = User(username="your_username", hashed_password=hashed_password)
+
+    db.add(new_user)
+    db.commit()
+    db.close()
+  """
+
+## Running the server
+
+- Go to the rag_backend folder
+- Run the command `uvicorn main:app --reload --host 0.0.0.0`
+
+## Running the docker file
+
+- Go to the rag_backend folder
+- Run the command docker-compose up --build 
 
 
