@@ -1,7 +1,10 @@
 #necessary imports 
 from langchain_community.vectorstores import PGVector
 from langchain.embeddings import HuggingFaceEmbeddings
+from dotenv import load_dotenv
 import os
+
+load_dotenv()
 
 #Initialize the secret variable
 DB_URL = os.getenv("DB_URL")

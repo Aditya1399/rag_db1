@@ -3,23 +3,12 @@ from pydantic import BaseModel
 from fastapi import HTTPException
 from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
 from dotenv import load_dotenv
-import torch
 import os 
 
 #load the necessary environmental variables
 load_dotenv()
 
 TEXT_GENERATION_MODEL=os.getenv('TEXT_GENERATION_MODEL')
-
-#QARequest Model Structure
-class QARequest(BaseModel):
-    question: str
-    top_k: int 
-
-#QAResponse Model Structure
-class QAResponse(BaseModel):
-    answer: str
-    relevant_documents: list 
 
 #Loading the GPU friendly model
 tokenizer = AutoTokenizer.from_pretrained(TEXT_GENERATION_MODEL)

@@ -5,6 +5,7 @@ from langchain.schema import Document
 from pydantic import BaseModel
 from dotenv import load_dotenv
 from sqlalchemy import create_engine
+from models.models import IngestRequest
 import os
 
 # Load the dotenv file
@@ -22,10 +23,6 @@ vector_store = PGVector(
     embedding_function=embeddings,
     collection_name="documents"
 )
-
-class IngestRequest(BaseModel):
-    title: str
-    content: str
 
 def ingest_document(doc: IngestRequest):
     """

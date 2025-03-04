@@ -2,8 +2,8 @@
 import pytest
 from fastapi.testclient import TestClient
 from main import app
-from models import User
-from database import SessionLocal
+from models.models import User
+from database.database import SessionLocal
 
 # Initialize the Test Client
 client = TestClient(app)
@@ -33,7 +33,7 @@ def create_test_user():
 
 def test_token_generation(create_test_user):
     response = client.post(
-        "/token",
+        "/api/v1/token",
         data={"username": create_test_user["username"], "password": create_test_user["password"]},
     )
     assert response.status_code == 200
@@ -45,7 +45,7 @@ def test_token_generation(create_test_user):
 
 def test_invalid_credentials():
     response = client.post(
-        "/token",
+        "/api/v1/token",
         data={"username": "wrong_user", "password": "wrong_password"},
     )
     assert response.status_code == 401
@@ -56,13 +56,13 @@ def test_invalid_credentials():
 
 def test_ingest_document(create_test_user):
     login_response = client.post(
-        "/token",
+        "/api/v1/token",
         data={"username": create_test_user["username"], "password": create_test_user["password"]},
     )
     token = login_response.json()["access_token"]
 
     response = client.post(
-        "/ingest",  json={"title": "Test Doc", "content": "Test content."},
+        "/api/v1/ingest",  json={"title": "Test Doc", "content": "Test content."},
         headers={"Authorization": f"Bearer {token}"})
     assert response.status_code == 200
     
@@ -72,13 +72,13 @@ def test_ingest_document(create_test_user):
 
 def test_qa_with_existing_doc(create_test_user):
     login_response = client.post(
-        "/token",
+        "/api/v1/token",
         data={"username": create_test_user["username"], "password": create_test_user["password"]},
     )
     token = login_response.json()["access_token"]
 
     response = client.post(
-        "/qa", json={"question": "What is test content?", "top_k": 1},
+        "/api/v1/qa", json={"question": "What is test content?", "top_k": 1},
         headers={"Authorization": f"Bearer {token}"},
     )
     assert response.status_code == 200
@@ -89,13 +89,13 @@ def test_qa_with_existing_doc(create_test_user):
 
 def test_list_documents(create_test_user):
     login_response = client.post(
-        "/token",
+        "/api/v1/token",
         data={"username": create_test_user["username"], "password": create_test_user["password"]},
     )
     token = login_response.json()["access_token"]
 
     response = client.get(
-        "/documents",
+        "/api/v1/documents",
         headers={"Authorization": f"Bearer {token}"},
     )
     assert response.status_code == 200
@@ -105,6 +105,6 @@ def test_list_documents(create_test_user):
 # Test access without token
 
 def test_access_without_token():
-    response = client.get("/documents")
+    response = client.get("/api/v1/documents")
     assert response.status_code == 401
     assert response.json() == {"detail": "Not authenticated"}

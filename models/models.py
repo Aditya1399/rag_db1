@@ -5,6 +5,7 @@ from pgvector.sqlalchemy import Vector
 from sqlalchemy.orm import Mapped, mapped_column
 from passlib.context import CryptContext
 from datetime import datetime, timezone
+from pydantic import BaseModel
 
 Base = declarative_base()
 
@@ -40,9 +41,24 @@ class User(Base):
     def hash_password(password: str) -> str:
         return pwd_context.hash(password)
 
+#IngestRequest model    
+class IngestRequest(BaseModel):
+    title: str
+    content: str
+
+#QARequest Model Structure
+class QARequest(BaseModel):
+    question: str
+    top_k: int 
+
+#QAResponse Model Structure
+class QAResponse(BaseModel):
+    answer: str
+    relevant_documents: list 
+
 #Function to initialise the db given 
 def init_db(db_url):
     engine = create_engine(db_url)
     Base.metadata.create_all(bind=engine)
     return sessionmaker(autocommit=False, autoflush=False, bind=engine)
-
+ 
